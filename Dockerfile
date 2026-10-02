@@ -177,6 +177,18 @@ RUN pip3 install --no-cache-dir                                                \
   && pip3 install --no-cache-dir -r                                            \
     https://raw.githubusercontent.com/OpenModelica/OpenModelica/9c0dc9a8ab50ba652109584cb3fecaef86640b66/doc/UsersGuide/source/requirements.txt
 
+# Get specific CMake version
+ENV CMAKE_VERSION 3.4.3
+
+RUN set -ex \
+  && curl -fsSLO --compressed https://cmake.org/files/v3.4/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
+  && curl -fsSLO --compressed https://cmake.org/files/v3.4/cmake-${CMAKE_VERSION}-SHA-256.txt.asc \
+  && curl -fsSLO --compressed https://cmake.org/files/v3.4/cmake-${CMAKE_VERSION}-SHA-256.txt \
+  && gpg --verify cmake-${CMAKE_VERSION}-SHA-256.txt.asc cmake-${CMAKE_VERSION}-SHA-256.txt \
+  && grep "cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz\$" cmake-${CMAKE_VERSION}-SHA-256.txt | sha256sum -c - \
+  && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
+  && rm -rf cmake-${CMAKE_VERSION}*
+
 # Set locale
 ENV LANGUAGE=en_US:en
 ENV LANG=C.UTF-8
